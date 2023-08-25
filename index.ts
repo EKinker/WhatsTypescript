@@ -1,67 +1,38 @@
 // Import stylesheets
-//import './style.css';
+// import './style.css';
 
+import { Words } from './words';
 
 const form: HTMLFormElement = document.querySelector('#defineform');
 const url = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
 
-  
-form.onsubmit = async (event) => {
-  event?.preventDefault();
+form.onsubmit = (event) => {
+  event.preventDefault();
+
   const formData = new FormData(form);
-
-  console.log(formData);
   const text = formData.get('defineword') as string;
-  console.log(text);
-  //return false; // prevent reload
 
-  try {
-    const response = await fetch(url+text);  //check this
-    
-    if (!response.ok) {
-      throw new Error('Request failed'+ response.status);
+    fetch(`${url}${text}`)
+      .then(response =>response.json())
+      .then((data: Words[]) => {
+
+    // Assuming the API response is an array of definitions for the word
+    if (Array.isArray(data) && data.length > 0) {
+      const firstDefinition = data[0];
+
+      console.log('Word:', firstDefinition.word);
+      console.log('Phonetic:', firstDefinition.phonetic);
+      console.log('Meanings:', firstDefinition.meanings);
+      document.getElementById("phonetic").innerHTML = data[0].phonetics[0].text;
+
+      let searchedWord = document.getElementById('searchedWord');
+      searchedWord.textContent = firstDefinition.word;
+    } else {
+      console.log('No definition found for the word.');
     }
-
-    const data: ApiResponse[] = await response.json();
-    console.log('Response: ', data)
-    // add more
-  
-  } catch (error) {
-    console.error('Oh no! ', error);
-  }
+      
+  })
+   .catch (error => {
+    console.error('Oh no...:', error);
+  })
 };
-
-interface ApiResponse {
-  word: string;
-  phonetics: Phonetic[];
-  meanings: Definition[];
-  license: {
-    name: string;
-    url: string;
-  };
-  sourceUrls: string[];
-}
-
-interface Phonetic {
-  audio: string;
-  text: string;
-  sourceUrl?: string;
-  license?: {
-    name: string;
-    url: string;
-  };
-}
-
-interface Definition {
-  partOfSpeech: string;
-  definitions: {
-    definition: string;
-    synonyms: string[];
-    antonyms: string[];
-    example?: string;
-  }[];
-  synonyms: string[];
-  antonyms: string[];
-}
-
-

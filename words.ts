@@ -1,49 +1,26 @@
-export interface Words{
-      word: string
-      phonetic?: string
-      phonetics: [
-        {
-          text: string
-          audio: string
-        },
-        {
-          text: string
-        }
-      ],
-      origin: string
-      meanings: [
-        {
-          partOfSpeech: string
-          definitions: [
-            {
-              definition: string
-              example: string
-              synonyms: []
-              antonyms: []
-            }
-          ]
-        },
-        {
-          partOfSpeech: string
-          definitions: [
-            {
-              definition: string
-              example: string
-              synonyms: [],
-              antonyms: []
-            }
-          ]
-        },
-        {
-          partOfSpeech: string
-          definitions: [
-            {
-              definition: string
-              example: string
-              synonyms: []
-              antonyms: []
-            }
-          ]
-        }
-      ]
+
+
+export interface Phonetic {
+  text: string;
+  audio?: string;
+}
+
+export interface Definition {
+  definition: string;
+  example: string;
+  synonyms: string[];
+  antonyms: string[];
+}
+
+export interface Meaning {
+  partOfSpeech: string;
+  definitions: Definition[];
+}
+
+export interface Words {
+  word: string;
+  phonetic?: string;
+  phonetics: Phonetic[];
+  origin: string;
+  meanings: Meaning[];
 }
